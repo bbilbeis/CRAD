@@ -18,7 +18,7 @@
 
 ## OVERVIEW
 
-Official PyTorch implementation of paper: **"CRAD: Class-wise Reliability-Aware Distillation for Decentralized Heterogeneous Federated Learning"** (arXiv: [2609.00446](https://arxiv.org/abs/2609.00446)).
+Official PyTorch implementation of paper: **"CRAD: Class-wise Reliability-Aware Distillation for Decentralized Heterogeneous Federated Learning"**.
 
 ---
 
