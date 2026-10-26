@@ -87,13 +87,13 @@ You can reproduce the paper results for any dataset using a single, one-line com
 
 ```bash
 # CIFAR-10 Benchmark (CRAD)
-python run_crad_cifar10.py        # or: ./run_crad_cifar10.sh
+python run/run_crad_cifar10.py        # or: ./run/run_crad_cifar10.sh
 
 # CIFAR-100 Benchmark (CRAD)
-python run_crad_cifar100.py       # or: ./run_crad_cifar100.sh
+python run/run_crad_cifar100.py       # or: ./run/run_crad_cifar100.sh
 
 # PathMNIST Benchmark (CRAD)
-python run_crad_pathmnist.py      # or: ./run_crad_pathmnist.sh
+python run/run_crad_pathmnist.py      # or: ./run/run_crad_pathmnist.sh
 ```
 
 <details>

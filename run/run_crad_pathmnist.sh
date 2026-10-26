@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 # Run CRAD on PathMNIST (Paper Benchmark)
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR" || exit 1
+
 python experiments/main.py \
   --algorithm TypicalKD \
   --idea 4.3_pre_v0 \
