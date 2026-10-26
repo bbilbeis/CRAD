@@ -1,12 +1,38 @@
 # CRAD: Class-wise Reliability-Aware Distillation for Decentralized Heterogeneous Federated Learning
 
+<<<<<<< HEAD
 ## OVERVIEW
 
 Official PyTorch implementation of paper: "CRAD: Class-wise Reliability-Aware Distillation for Decentralized Heterogeneous Federated Learning". https://arxiv.org/abs/2609.00446
+=======
+<p align="center">
+  <b>Baraa Bilbeisi</b><sup>1</sup> &nbsp;|&nbsp;
+  <b>Mengchen Fan</b><sup>2</sup> &nbsp;|&nbsp;
+  <b>Baocheng Geng</b><sup>2</sup> &nbsp;|&nbsp;
+  <b>Qing Tian</b><sup>2,*</sup>
+  <br>
+  <sup>1</sup>Department of Electrical and Computer Engineering, University of Alabama at Birmingham<br>
+  <sup>2</sup>Department of Computer Science, University of Alabama at Birmingham<br>
+  <sup>*</sup>Corresponding author
+</p>
+
+<p align="center">
+  <a href="https://arxiv.org/abs/2609.00446"><img src="https://img.shields.io/badge/arXiv-2609.00446-b31b1b.svg" alt="arXiv"></a>
+  <a href="https://arxiv.org/pdf/2609.00446"><img src="https://img.shields.io/badge/Paper-PDF-red.svg" alt="Paper PDF"></a>
+</p>
+
+## OVERVIEW
+
+Official PyTorch implementation of paper: **"CRAD: Class-wise Reliability-Aware Distillation for Decentralized Heterogeneous Federated Learning"** (arXiv: [2609.00446](https://arxiv.org/abs/2609.00446)).
+>>>>>>> 603c4f8 (Update README)
 
 ---
 
 ### ABSTRACT
+<<<<<<< HEAD
+=======
+
+>>>>>>> 603c4f8 (Update README)
 Conventional federated learning (FL) relies on parameter averaging, which forces clients to be doubly homogeneous: it demands an identical architecture and degrades under non-IID data. Real-world deployments usually break both assumptions. We sidestep both by building a decentralized knowledge distillation framework in which each client evaluates its peers' model snapshots on its own local data and distills from the resulting soft predictions. Because knowledge is transferred through the shared class posterior, clients are free to run different architectures; and because every teacher is evaluated on the student's own device, raw data never leaves the client, with no central server or public dataset required. Within this setting, we identify and address an under-examined problem: how to combine the peer teacher predictions. Existing methods, like uniform averaging, ignore how knowledge reliability varies across teachers and classes. We propose Class-wise Reliability-Aware Distillation (CRAD), which, per class, first discards teachers that disagree with the peer consensus and then takes a weighted average of the rest, weighting each teacher by its per-class reliability (precision, or inverse variance). Since the variance of an accuracy from n samples scales as 1/n, support enters automatically: among the teachers that survive filtering, a teacher is trusted for a class to the degree that it is both accurate and well-evidenced for it. On three image-classification benchmarks (CIFAR-10, CIFAR-100, and PathMNIST colon pathology), across heterogeneous architectures under severe non-IID skew, CRAD consistently outperforms competing methods in global accuracy.
 
 ---
@@ -77,8 +103,8 @@ Conventional federated learning (FL) relies on parameter averaging, which forces
 
 ```bash
 # Clone the repository
-git clone https://github.com/bbilbeis/DFL-KD.git
-cd DFL-KD
+git clone https://github.com/bbilbeis/CRAD.git
+cd CRAD
 
 # Create and activate virtual environment (Python 3.10 – 3.12 recommended for PyTorch wheels)
 python3.12 -m venv .venv
