@@ -31,7 +31,7 @@ Conventional federated learning (FL) relies on parameter averaging, which forces
 ### Main Benchmark Performance
 
 <p align="center">
-  <img src="forREADME/SCR-20261026-idmj.png" alt="Table 1: Main Benchmark Accuracy" width="100%" />
+  <img src="forREADME/table1.png" alt="Table 1: Main Benchmark Accuracy" width="100%" />
 </p>
 
 > Table 1. Teacher-aggregation comparison on CIFAR-10, CIFAR-100 and PathMNIST (N = 10, non-IID Dirichlet, R = 300). All decentralized-KD methods share the identical backbone and distillation weight λ = 0.7, differing only in how peer teachers are combined; the checkpoint is selected on each client’s validation split. CRAD’s support threshold nc min is the per-class peer median on CIFAR-10 and CIFAR-100, and the 20th percentile (retaining the top 80% of teachers) on PathMNIST. Accuracies are percentages, with global accuracy the primary metric. Best aggregation result in each column in bold
@@ -41,7 +41,7 @@ Conventional federated learning (FL) relies on parameter averaging, which forces
 ### Communication & Computation Cost Comparison
 
 <p align="center">
-  <img src="forREADME/SCR-20261026-idoc.png" alt="Table 2: Cost Comparison" width="75%" />
+  <img src="forREADME/table2.png" alt="Table 2: Cost Comparison" width="75%" />
 </p>
 
 > Table 2. Cost on CIFAR-10 (N = 10), measured under the setup of Table 1 on identical hardware. Payload is what one client transmits per round and GPU its peak resident memory; Time is the wall-clock duration of a full communication round. “Proxy” marks methods additionally requiring public or synthetic data.
@@ -51,13 +51,13 @@ Conventional federated learning (FL) relies on parameter averaging, which forces
 ### Per-Class Performance & Convergence Analyses
 
 <p align="center">
-  <img src="forREADME/cifar-10_per_class_subplots_r1.png" alt="Figure 2: Per-Class Accuracy" width="100%" />
+  <img src="forREADME/figure2.png" alt="Figure 2: Per-Class Accuracy" width="100%" />
 </p>
 
 > Figure 2. Per-class global accuracy on CIFAR-10 with classes ordered by local training support (shown in the parentheses, abundant to rare), for all compared methods. The methods agree more on well-supported classes and separate on the rare ones, where CRAD degrades the least
 
 <p align="center">
-  <img src="forREADME/cifar-10_learning_curves_r1.png" alt="Figure 3: Global Accuracy Convergence" width="90%" />
+  <img src="forREADME/figure3.png" alt="Figure 3: Global Accuracy Convergence" width="90%" />
 </p>
 
 > Figure 3. Global accuracy vs. communication round for all compared methods on CIFAR-10. CRAD (red) stays above every other method from the early rounds onward and converges stably, whereas DFML swings sharply from round to round
@@ -185,14 +185,11 @@ python experiments/main.py \
 
 To evaluate scalability when the client population expands and participation becomes sparse, we evaluate client pools of $N \in \{20, 50, 100\}$ on CIFAR-10, activating a random subset of 10 clients per communication round:
 
-**Table 3.** Client-number ablation on CIFAR-10 with partial participation. Each run uses $R=300$ rounds and activates 10 clients per round. Global accuracy is averaged over all clients.
+<p align="center">
+  <img src="forREADME/table3.png" alt="Table 3: Client Scaling Ablation" width="85%" />
+</p>
 
-| Method | $N = 20$ Global (%) | $N = 20$ Local (%) | $N = 50$ Global (%) | $N = 50$ Local (%) | $N = 100$ Global (%) | $N = 100$ Local (%) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| Uniform KD | 53.77 | 68.89 | 22.81 | 54.02 | 11.01 | 40.83 |
-| **CRAD (Ours)** | **64.18** | **72.58** | **29.94** | **58.16** | **22.19** | **55.83** |
-
-*Under increasing scale and data fragmentation, naive uniform distillation collapses due to aggregating mostly misinformed teachers. CRAD preserves over $2\times$ the global accuracy of Uniform KD at $N=100$.*
+> **Table 3.** Client-number ablation on CIFAR-10 with partial participation. Each run uses $R=300$ rounds and activates 10 clients per round. Global accuracy is averaged over all clients. Under increasing scale and data fragmentation, naive uniform distillation collapses due to aggregating mostly misinformed teachers. CRAD preserves over $2\times$ the global accuracy of Uniform KD at $N=100$.
 
 ---
 
@@ -200,17 +197,11 @@ To evaluate scalability when the client population expands and participation bec
 
 We ablate the aggregation weighting function within the CRAD framework on CIFAR-100 across 7 mathematical formulations:
 
-**Table 4.** Ablation of teacher-weighting rules on CIFAR-100. All variants use the same CRAD framework and differ only in the aggregation weight function.
+<p align="center">
+  <img src="forREADME/table4.png" alt="Table 4: Teacher Weighting Rules Ablation" width="85%" />
+</p>
 
-| Weighting Rule | Weight Formulation | Global Acc. (%) | Local Acc. (%) |
-| :--- | :---: | :---: | :---: |
-| Inverse Std Dev | $1/\sigma$ | 46.89 | 57.98 |
-| Accuracy Only | $\tilde{a}$ | 47.22 | 58.56 |
-| Support Only | $n$ | 47.25 | 58.26 |
-| Softmax Variance (SM) | $\text{softmax}(-\sigma^2)$ | 46.71 | 58.45 |
-| Lower Confidence Bound (LCB) | $\max(0, \tilde{a} - \sigma)$ | 47.02 | 58.54 |
-| Inverse Cross-Entropy | $1/\text{CE}$ | 47.17 | 58.53 |
-| **CRAD (Precision / Inverse Variance)** | $\mathbf{1/\sigma^2}$ | **48.22** | **59.87** |
+> **Table 4.** Ablation of teacher-weighting rules on CIFAR-100. All variants use the same CRAD framework and differ only in the aggregation weight. Acc.: accuracy-only; Sup.: support-only; SM: $\mathrm{softmax}(-\sigma^2)$; LCB: $\max(0,\tilde a-\sigma)$; $\mathrm{CE}$: cross-entropy.
 
 ---
 
