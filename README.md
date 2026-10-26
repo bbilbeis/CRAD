@@ -200,12 +200,17 @@ To evaluate scalability when the client population expands and participation bec
 
 We ablate the aggregation weighting function within the CRAD framework on CIFAR-100 across 7 mathematical formulations:
 
-**Table 4.** Ablation of teacher-weighting rules on CIFAR-100. All variants use the same CRAD framework and differ only in the aggregation weight. Acc.: accuracy-only; Sup.: support-only; SM: $\mathrm{softmax}(-\sigma^2)$; LCB: $\max(0,\tilde a-\sigma)$; $\mathrm{CE}$: cross-entropy.
+**Table 4.** Ablation of teacher-weighting rules on CIFAR-100. All variants use the same CRAD framework and differ only in the aggregation weight function.
 
-| Metric | $1/\sigma$ | Acc. Only | Sup. Only | SM ($\mathrm{softmax}(-\sigma^2)$) | LCB ($\max(0,\tilde{a}-\sigma)$) | $1/\mathrm{CE}$ | **CRAD ($1/\sigma^2$)** |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Global Acc. (%)** | 46.89 | 47.22 | 47.25 | 46.71 | 47.02 | 47.17 | **48.22** |
-| **Local Acc. (%)** | 57.98 | 58.56 | 58.26 | 58.45 | 58.54 | 58.53 | **59.87** |
+| Weighting Rule | Weight Formulation | Global Acc. (%) | Local Acc. (%) |
+| :--- | :---: | :---: | :---: |
+| Inverse Std Dev | $1/\sigma$ | 46.89 | 57.98 |
+| Accuracy Only | $\tilde{a}$ | 47.22 | 58.56 |
+| Support Only | $n$ | 47.25 | 58.26 |
+| Softmax Variance (SM) | $\text{softmax}(-\sigma^2)$ | 46.71 | 58.45 |
+| Lower Confidence Bound (LCB) | $\max(0, \tilde{a} - \sigma)$ | 47.02 | 58.54 |
+| Inverse Cross-Entropy | $1/\text{CE}$ | 47.17 | 58.53 |
+| **CRAD (Precision / Inverse Variance)** | $\mathbf{1/\sigma^2}$ | **48.22** | **59.87** |
 
 ---
 
