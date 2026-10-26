@@ -1,0 +1,14 @@
+torch
+torchvision
+torchaudio
+numpy
+matplotlib
+seaborn
+pandas
+h5py
+wandb
+Pillow
+graphviz
+ptflops
+scikit-learn
+scipy
