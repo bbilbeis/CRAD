@@ -233,11 +233,10 @@ We ablate the aggregation weighting function within the CRAD framework on CIFAR-
 If you find this work useful in your research, please cite our paper:
 
 ```bibtex
-@article{bilbeisi2026crad,
+@inproceedings{bilbeisi2027crad,
   title={CRAD: Class-wise Reliability-Aware Distillation for Decentralized Heterogeneous Federated Learning},
   author={Bilbeisi, Baraa and Fan, Mengchen and Geng, Baocheng and Tian, Qing},
-  journal={arXiv preprint arXiv:2609.00446},
-  year={2026},
-  url={https://arxiv.org/abs/2609.00446}
+  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)},
+  year={2027}
 }
 ```
