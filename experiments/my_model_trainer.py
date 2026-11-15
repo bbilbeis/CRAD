@@ -116,6 +116,7 @@ def crad_kd_loss(
     use_safe_harbor: bool = False,
     safe_harbor_gamma: float = 0.3,
     safe_harbor_cap: float = 50.0,
+    unweighted_consensus: bool = False,
 ) -> torch.Tensor:
     """
     Class-wise Reliability-Aware Distillation (CRAD).
@@ -176,13 +177,18 @@ def crad_kd_loss(
     effective_mask[:, fallback_classes] = 1.0
     effective_mask_expanded = effective_mask.unsqueeze(1)  # [N, 1, C]
 
-    # 2. Weighted consensus from competent teachers only
-    gated_w = effective_mask_expanded * w_teachers  # [N, 1, C]
-    gated_w = torch.nan_to_num(gated_w, nan=0.0, posinf=0.0, neginf=0.0)
-    q_bar_pre_unnorm = torch.sum(p_teachers * gated_w, dim=0)  # [B, C]
-    sum_gated = torch.sum(gated_w, dim=0)  # [B, C]
-    safe_sum_gated = torch.where(sum_gated > 1e-10, sum_gated, torch.ones_like(sum_gated))
-    q_bar_pre = torch.where(sum_gated > 1e-10, q_bar_pre_unnorm / safe_sum_gated, p_teachers.mean(dim=0))
+    # 2. Preliminary consensus from competent teachers
+    if unweighted_consensus:
+        mask_sum = torch.sum(effective_mask_expanded, dim=0)
+        safe_mask_sum = torch.where(mask_sum > 1e-10, mask_sum, torch.ones_like(mask_sum))
+        q_bar_pre = torch.where(mask_sum > 1e-10, torch.sum(p_teachers * effective_mask_expanded, dim=0) / safe_mask_sum, p_teachers.mean(dim=0))
+    else:
+        gated_w = effective_mask_expanded * w_teachers  # [N, 1, C]
+        gated_w = torch.nan_to_num(gated_w, nan=0.0, posinf=0.0, neginf=0.0)
+        q_bar_pre_unnorm = torch.sum(p_teachers * gated_w, dim=0)  # [B, C]
+        sum_gated = torch.sum(gated_w, dim=0)  # [B, C]
+        safe_sum_gated = torch.where(sum_gated > 1e-10, sum_gated, torch.ones_like(sum_gated))
+        q_bar_pre = torch.where(sum_gated > 1e-10, q_bar_pre_unnorm / safe_sum_gated, p_teachers.mean(dim=0))
 
     sum_pre = torch.sum(q_bar_pre, dim=-1, keepdim=True)
     q_bar_pre = torch.where(sum_pre > 1e-8, q_bar_pre / sum_pre, torch.full_like(q_bar_pre, 1.0 / C))
@@ -531,6 +537,8 @@ class MyModelTrainer(ModelTrainer):
                             safe_harbor_gamma = getattr(args, 'safe_harbor_gamma', 0.3)
                             safe_harbor_cap = getattr(args, 'safe_harbor_cap', 50.0)
 
+                            unweighted = getattr(args, 'idea', 'crad') == '4.3_paper'
+
                             loss_kd = crad_kd_loss(
                                 log_probs, teacher_logits_list, teacher_reliabilities,
                                 teacher_sample_counts, T,
@@ -541,7 +549,8 @@ class MyModelTrainer(ModelTrainer):
                                 target_class=target_class, class_weights=class_weights,
                                 use_safe_harbor=use_safe_harbor,
                                 safe_harbor_gamma=safe_harbor_gamma,
-                                safe_harbor_cap=safe_harbor_cap
+                                safe_harbor_cap=safe_harbor_cap,
+                                unweighted_consensus=unweighted
                             )
 
                         loss = loss + current_alpha_kd * loss_kd

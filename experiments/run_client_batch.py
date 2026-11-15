@@ -46,7 +46,8 @@ def build_peer_neighbor_info(n_idx, args, w_per_mdls_lstrd, client_archs, classw
         scaled_rel[zero_mask] = prior_weight
     scaled_rel = torch.nan_to_num(scaled_rel, nan=0.0, posinf=0.0, neginf=0.0)
     train_counts = torch.nan_to_num(torch.tensor(class_counts[n_idx]).float(), nan=0.0)
-    return (w_per_mdls_lstrd[n_idx], client_archs[n_idx], scaled_rel, train_counts, n_idx)
+    support_counts = count_vec if getattr(args, 'idea', 'crad') == '4.3_paper' else train_counts
+    return (w_per_mdls_lstrd[n_idx], client_archs[n_idx], scaled_rel, support_counts, n_idx)
 
 
 def np_benefit_choose(round_idx, clnt_idx, num_clients, client_num_per_round, cs):

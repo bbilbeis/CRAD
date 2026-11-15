@@ -331,7 +331,7 @@ def main(args):
 
     print("\n" + "=" * 125)
     # If pre-filtering is selected (idea == '4.3_pre'), we add a note to the header and compute the competent mask + thresholds
-    pre_filtering_active = (args.idea in ('4.3_pre', '4.3_pre_v0'))
+    pre_filtering_active = (args.idea in ('4.3_pre', '4.3_pre_v0', '4.3_paper', 'crad'))
     competent_mask = None
     thresholds = None
     thresh_label = "Thresh"
@@ -543,8 +543,9 @@ if __name__ == "__main__":
                         help="Weight assigned to the neighbor Knowledge Distillation loss. "
                              "Remaining weight (1 - alpha_kd) is assigned to local Cross-Entropy.")
     parser.add_argument("--idea",          type=str,   default="4.3_pre_v0",
-                        choices=["4.3_pre_v0", "crad", "4.3_pre", "baseline", "idea3"],
-                        help="KD aggregation method: '4.3_pre_v0' / 'crad' (CRAD: Class-wise Reliability-Aware Distillation), "
+                        choices=["4.3_pre_v0", "crad", "4.3_pre", "4.3_paper", "baseline", "idea3"],
+                        help="KD aggregation method: '4.3_pre_v0' / 'crad' (CRAD with precision-weighted consensus, default), "
+                             "'4.3_paper' (CRAD with unweighted consensus and validation support filtering), "
                              "'baseline' (Uniform KD), 'idea3' (Uncertainty KD)")
     parser.add_argument("--n0",            type=float, default=10.0,
                         help="Half-saturation point for reliability estimation.")

@@ -286,9 +286,12 @@ try:
                             if getattr(self.args, 'idea', 'crad') in ('baseline', 'uniform'):
                                 neighbor_info.append((w_per_mdls_lstrd[n_idx], self.client_archs[n_idx], None, n_idx))
                             else:
-                                count_vec = torch.tensor(self.class_counts[n_idx])
+                                if getattr(self.args, 'fix_eq6', True) and hasattr(self, 'client_val_class_counts') and self.client_val_class_counts is not None:
+                                    count_vec = torch.nan_to_num(self.client_val_class_counts[n_idx].float(), nan=0.0)
+                                else:
+                                    count_vec = torch.nan_to_num(torch.tensor(self.class_counts[n_idx]).float(), nan=0.0)
+
                                 acc_vec = torch.nan_to_num(classwise_accs[n_idx].float(), nan=0.0)
-                                count_vec = torch.nan_to_num(count_vec.float(), nan=0.0)
                                 eps = getattr(self.args, 'eps_var', 1e-6)
                                 tilde_a = (acc_vec * count_vec + 2.0) / (count_vec + 4.0)
                                 scaled_rel = 1.0 / ((tilde_a * (1.0 - tilde_a)) / (count_vec + 4.0) + eps)
@@ -300,7 +303,9 @@ try:
                                     prior_weight = 1.0 / (0.0625 + eps)
                                     scaled_rel[zero_mask] = prior_weight
                                 scaled_rel = torch.nan_to_num(scaled_rel, nan=0.0, posinf=0.0, neginf=0.0)
-                                neighbor_info.append((w_per_mdls_lstrd[n_idx], self.client_archs[n_idx], scaled_rel, count_vec.float(), n_idx))
+                                train_counts = torch.nan_to_num(torch.tensor(self.class_counts[n_idx]).float(), nan=0.0)
+                                support_counts = count_vec if getattr(self.args, 'idea', 'crad') == '4.3_paper' else train_counts
+                                neighbor_info.append((w_per_mdls_lstrd[n_idx], self.client_archs[n_idx], scaled_rel, support_counts, n_idx))
 
                 class_weights = client_class_weights[clnt_idx]
                 
@@ -733,7 +738,8 @@ class dispfd(object):
                             scaled_rel[zero_mask] = prior_weight
                         scaled_rel = torch.nan_to_num(scaled_rel, nan=0.0, posinf=0.0, neginf=0.0)
                         train_counts = torch.nan_to_num(self.client_class_counts[n_idx].float(), nan=0.0)
-                        neighbor_info.append((w_per_mdls_lstrd[n_idx], self.client_archs[n_idx], scaled_rel, train_counts, n_idx))
+                        support_counts = count_vec if getattr(self.args, 'idea', 'crad') == '4.3_paper' else train_counts
+                        neighbor_info.append((w_per_mdls_lstrd[n_idx], self.client_archs[n_idx], scaled_rel, support_counts, n_idx))
             # Comm overhead = receiving one model per neighbor
             total_neighbor_params = sum(
                 sum(p.numel() for p in entry[0].values()) 
