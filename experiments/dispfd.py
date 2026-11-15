@@ -304,7 +304,7 @@ try:
                                     scaled_rel[zero_mask] = prior_weight
                                 scaled_rel = torch.nan_to_num(scaled_rel, nan=0.0, posinf=0.0, neginf=0.0)
                                 train_counts = torch.nan_to_num(torch.tensor(self.class_counts[n_idx]).float(), nan=0.0)
-                                support_counts = count_vec if getattr(self.args, 'idea', 'crad') == '4.3_paper' else train_counts
+                                support_counts = count_vec if getattr(self.args, 'idea', 'crad') in ('4.3_paper', '4.3_pre_val') else train_counts
                                 neighbor_info.append((w_per_mdls_lstrd[n_idx], self.client_archs[n_idx], scaled_rel, support_counts, n_idx))
 
                 class_weights = client_class_weights[clnt_idx]
@@ -738,7 +738,7 @@ class dispfd(object):
                             scaled_rel[zero_mask] = prior_weight
                         scaled_rel = torch.nan_to_num(scaled_rel, nan=0.0, posinf=0.0, neginf=0.0)
                         train_counts = torch.nan_to_num(self.client_class_counts[n_idx].float(), nan=0.0)
-                        support_counts = count_vec if getattr(self.args, 'idea', 'crad') == '4.3_paper' else train_counts
+                        support_counts = count_vec if getattr(self.args, 'idea', 'crad') in ('4.3_paper', '4.3_pre_val') else train_counts
                         neighbor_info.append((w_per_mdls_lstrd[n_idx], self.client_archs[n_idx], scaled_rel, support_counts, n_idx))
             # Comm overhead = receiving one model per neighbor
             total_neighbor_params = sum(
