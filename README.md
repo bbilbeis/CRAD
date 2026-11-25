@@ -42,10 +42,10 @@ Conventional federated learning (FL) relies on parameter averaging, which forces
 | (a) Validation Support Counts ($n_j^c$) | (b) Per-Client Global Test Accuracy (%) |
 | :---: | :---: |
 | <img src="figures/cifar10_panel_a_val_support.png" width="100%" /> | <img src="figures/cifar10_panel_b_test_acc.png" width="100%" /> |
-| **(c) Success Case (Bird Image #9381)** | **(d) Failure Case (Dog Image #128)** |
-| <img src="figures/cifar10_panel_c_success_bird.png" width="100%" /> | <img src="figures/cifar10_panel_d_failure_dog.png" width="100%" /> |
+| **(c) Success Case (Ship Image #2)** | **(d) Failure Case (Dog Image #128)** |
+| <img src="figures/cifar10_panel_c_success_ship.png" width="100%" /> | <img src="figures/cifar10_panel_d_failure_dog.png" width="100%" /> |
 
-> Figure 2. CRAD’s two-stage aggregation traced on two individual CIFAR-10 test images. W is the assigned distillation weight after per-class normalization, and the parenthesized value is the client’s probability on the true class. (c) Success case, a bird image: teachers with a single sample of the class are dropped as uninformed, four more fall outside the acceptance band ˜qc ± τc and are dropped as consensus outliers, and the surviving well-supported specialist (C1, n = 180) receives 59.5% of the weight, raising the aggregated target on the true class to 79.4% from a preliminary consensus of 68.3%. (d) Failure case, a dog image: the best-evidenced teacher (C7, n = 258, and correct at 63.7%) deviates from a low consensus formed by less informed peers and is removed by Stage 1, so its knowledge never reaches Stage 2 and the target stays at 27.2%.
+> Figure 2. CRAD’s two-stage aggregation traced on two individual CIFAR-10 test images. W is the assigned distillation weight after per-class normalization, the parenthesized value is the client’s probability on the true class, and dev = |q_j^c - q̃^c| denotes absolute deviation from preliminary consensus. (c) Success case, a ship image: teachers below the median support threshold (n < 33.0) are dropped upfront, two more fall outside the acceptance band ˜qc ± τc and are dropped as consensus outliers, and the surviving well-supported specialist (C5, n = 166) receives 65.5% of the weight, raising the aggregated target on the true class to 86.8% from a preliminary consensus of 68.7% (vs. 58.9% for uniform KD). (d) Failure case, a dog image: after dropping shards below median (n < 21.0), the best-evidenced teacher (C7, n = 258, and correct at 63.7%) deviates from a low consensus formed by less informed peers and is removed by the Stage-2 agreement filter, so its knowledge never reaches precision weighting and the target stays at 24.6%.
 
 ---
 
@@ -199,6 +199,13 @@ python experiments/main.py \
 * **Uncertainty KD:** Replace `--idea 4.3_pre_v0 --adaptive_pre_filter` with `--idea idea3`.
 
 </details>
+
+> **Note on CRAD `--idea` Variants & Method Description:**
+> - `--idea 4.3_pre_v0` *(default)*: Uses per-class **training counts** ($n_{\text{train}, j}^c$) for Stage-1 support filtering and **precision-weighted** preliminary consensus for Stage-2 agreement filtering (used for the reported paper results).
+> - `--idea 4.3_pre_val`: Uses per-class **validation counts** ($n_j^c$) for Stage-1 support filtering and **precision-weighted** preliminary consensus for Stage-2.
+> - `--idea 4.3_paper`: Uses per-class **validation counts** ($n_j^c$) for Stage-1 support filtering and **unweighted** preliminary consensus for Stage-2.
+>
+> Please refer to the updated [arXiv v3](https://arxiv.org/abs/2609.00446) for the corrected method description.
 
 ---
 
